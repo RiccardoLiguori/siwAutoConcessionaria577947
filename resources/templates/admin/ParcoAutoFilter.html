@@ -1,0 +1,259 @@
+
+
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="/CSS/stileParcoAuto.css">
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <title>Ric&Nic | ParcoAuto</title>
+</head>
+<body>
+
+<div>
+ 
+  <div class ="navbar">
+  	<div class="logo">
+      <img src="\Image\logo.png" width="175px"> 
+  	</div>
+    <nav>
+     	<ul>
+     		<li><a href="/">HOME</a></li>
+                <li><a href="/admin/ParcoAuto">MODIFICA UN VEICOLO</a></li>
+                <li><a href="/admin/formNewAuto">AGGIUNGI UN VEICOLO</a></li>
+                <li>
+		 <div th:if="${userDetails != null}">
+        <span th:text="${userDetails.username}"></span>
+        <a href="/logout">LOGOUT</a>
+    </div>
+    <div th:if="${userDetails == null}">
+        <a href="/login">LOGIN</a>
+    </div></li>
+     	</ul>
+   </nav>
+  </div>
+  </div>
+	<br><br><h2>Lista veicoli</h2>  
+		<p><br /><br /></p>
+	<div class="container2">
+	<div class="Filtri">
+      <h3>Ricerca per Filtro</h3><br></br>
+	<div class="box">
+<form action="/admin/ParcoAutoFilter" method="post" th:action="@{/admin/ParcoAutoFilter}">
+    <label for="alimentazione"><b>Alimentazione:</b></label>
+    <select name="alimentazione" id="alimentazione">
+        <option value="all" th:selected="${alimentazione eq 'all'}">Seleziona tutti</option>
+        <option value="Benzina" th:selected="${alimentazione eq 'Benzina'}">Benzina</option>
+        <option value="Diesel" th:selected="${alimentazione eq 'Diesel'}">Diesel</option>
+        
+    </select>
+  <br></br>
+    <label for="marca"><b>Marca:</b></label>
+    <select name="marca" id="marca">
+        <option value="all" th:selected="${marca eq 'all'}">Tutte le marche</option>
+        <option value="Fiat" th:selected="${marca eq 'Fiat'}">Fiat</option>
+		<option value="Peugeot" th:selected="${marca eq 'Peugeot'}">Peugeot</option>
+		<option value="BMW" th:selected="${marca eq 'BMW'}">BMW</option>
+		<option value="Nissan" th:selected="${marca eq 'Nissan'}">Nissan</option>
+		<option value="Citroen" th:selected="${marca eq 'Citroen'}">Citroen</option>
+    </select>
+   <br></br>
+    <label for="modello"><b>Modello:</b></label>
+    <select name="modello" id="modello">
+        <option value="all">Tutti i modelli</option>
+        <!--Opzioni di modello generate dinamicamente--> 
+    </select>
+   <br></br>
+  <label for="condizioni"><b>Condizioni:</b></label>
+    <select name="condizioni" id="condizioni">
+         <option value="all" th:selected="${condizioni eq 'all'}">Tutte le Condizioni</option>
+        <option value="Nuovo" th:selected="${condizioni eq 'Nuovo'}">Nuovo</option>
+		<option value="Usato" th:selected="${condizioni eq 'Usato'}">Usato</option>
+    </select>
+    <br> </br>
+    <label for="prezzo"><b>Prezzo:</b></label>
+ <br> </br>
+    <div id="price-range-slider">
+  <div id="price-range-values"> </div>
+</div>
+<input type="hidden" id="prezzoMassimo" name="prezzoMassimo" />
+<br> </br> 
+    <input type="submit" value="Filtra">
+</form>
+	</div>
+	</div>
+	
+	
+	<div class="AutoList">
+    <div class="message" th:if="${AutoList==null ||  AutoList.isEmpty()}">
+        Non ci sono Auto nel sistema
+    </div>
+    <ul class="car-list" th:if="${AutoList != null && !AutoList.isEmpty()}">
+        <li th:each="Auto : ${AutoList}">
+            <div class="car">
+	<div class="image-container">
+    <a th:href="@{'/admin/Auto/' + ${Auto.Id}}">
+		<img th:src="${Auto.urlimage}" alt="Auto Image"/>
+        <span class="overlay">Modifica veicolo</span>
+    </a>
+    </div>
+                <div class="car-details">
+                    <a th:href="@{'/Auto/' + ${Auto.Id}}"
+                       th:text="${Auto.marca} + ' (' + ${Auto.modello} + ')'"></a>
+                    <p class="car-price" th:text="'Prezzo: € ' + ${Auto.prezzo}"></p>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+</div>
+
+
+
+     
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section about">
+            <h2>Chi siamo</h2>
+            <p>Siamo un autoconcessionario dedicato alla soddisfazione dei nostri clienti. Offriamo una vasta gamma di veicoli di alta qualità.</p><br></br>
+            <div class="contact">
+                <span><i class="fas fa-map-marker-alt"></i> Via della Magliana, 370 - Roma</span>
+                <span><i class="fas fa-phone"></i> 06 456789</span>
+                <span><i class="fas fa-envelope"></i> info@Ric&NicAutoconcessionario.com</span>
+            </div>
+        </div>
+        <div class="footer-section links">
+            <h2>Link utili</h2>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/admin/ParcoAuto">Modifica un veicolo</a></li>
+                <li><a href="/admin/formNewAuto">Aggiungi un veicolo</a></li>
+               
+            </ul>
+        </div>
+        <div class="footer-section social">
+            <h2>Seguici</h2>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        &copy; 2024 Autoconcessionario | Tutti i diritti riservati
+    </div>
+</footer>
+
+
+</body>
+</html>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"> </script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"> </script>
+
+</body>
+<script>
+$(function() {
+    var prezzoMassimoStored = localStorage.getItem("prezzoMassimo");
+    var prezzoMassimoDefault = prezzoMassimoStored ? parseInt(prezzoMassimoStored) : 50000; // Default reasonable maximum
+
+    $("#price-range-slider").slider({
+        range: "max",
+        min: 0,
+        max: 50000,
+        value: prezzoMassimoDefault,
+        slide: function(event, ui) {
+            $("#prezzoMassimo").val(ui.value);
+            $("#price-range-values").html("<strong>Prezzo Massimo:</strong> " + ui.value.toLocaleString() + " €");
+        },
+        change: function(event, ui) {
+            localStorage.setItem("prezzoMassimo", ui.value);
+            // Ensure the hidden input field is always updated
+            $("#prezzoMassimo").val(ui.value);
+        }
+    });
+
+    // Ensure the initial value is set on the input
+    $("#prezzoMassimo").val(prezzoMassimoDefault);
+    $("#price-range-values").html("<strong>Prezzo Massimo:</strong> " + prezzoMassimoDefault.toLocaleString() + " €");
+});
+
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    populateModelloOptions();
+});
+
+document.getElementById("marca").addEventListener("change", function() {
+    populateModelloOptions();
+});
+
+function populateModelloOptions() {
+    var selectedMarca = document.getElementById("marca").value;
+    var selectedModello = document.getElementById("modello").value;
+    var modelloSelect = document.getElementById("modello");
+
+    // Pulisci le opzioni del modello
+    modelloSelect.innerHTML = "";
+
+    // Aggiungi l'opzione "Tutti i modelli"
+    var optionAll = document.createElement("option");
+    optionAll.value = "all";
+    optionAll.textContent = "Tutti i modelli";
+    modelloSelect.appendChild(optionAll);
+
+    // Se è stata selezionata una marca diversa da "Tutte le marche"
+    if (selectedMarca !== "all") {
+        // Aggiungi le opzioni del modello corrispondenti alla marca selezionata
+        var modelli = getModelliPerMarca(selectedMarca); // Funzione da implementare per recuperare i modelli dalla marca
+
+        // Se ci sono opzioni di modello disponibili
+        if (modelli.length > 0) {
+            // Aggiungi le opzioni del modello corrispondenti alla marca selezionata
+            modelli.forEach(function(modello) {
+                var option = document.createElement("option");
+                option.value = modello;
+                option.textContent = modello;
+                modelloSelect.appendChild(option);
+            });
+
+            // Seleziona il modello precedentemente selezionato se è tra le opzioni disponibili
+            if (modelli.includes(selectedModello)) {
+                modelloSelect.value = selectedModello;
+            }
+        }
+    }
+}
+
+// Funzione da implementare per recuperare i modelli dalla marca selezionata
+function getModelliPerMarca(marca) {
+    // Implementa il recupero dinamico dei modelli dalla marca selezionata
+    // Ad esempio, puoi fare una chiamata AJAX al server per ottenere i modelli
+    // oppure utilizzare una struttura dati predefinita
+    if (marca === "Fiat") {
+        return ["500", "Panda", "Tipo"];
+    } else if (marca === "Peugeot") {
+        return ["208", "3008", "508"];
+    } else if (marca === "BMW") {
+        return ["X5", "320i"];
+    }else if (marca === "Citroen") {
+        return ["C4", "C3"];
+    }else if (marca === "Nissan") {
+        return ["Juke", "Qashqai"];
+    }
+     else {
+        return [];
+    }
+}
+
+</script>
+
+</html>
+
+
+

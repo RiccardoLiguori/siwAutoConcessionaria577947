@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>
+		Ric&Nic | AutoSalone - Login
+	</title>
+	<link rel="stylesheet" href="/CSS/stileLogin.css" />
+</head>
+
+<body>
+	<div class="container">
+  <div class ="navbar">
+  	<div class="logo">
+      <img src="Image/logo.png" width="175px"/> 
+  	</div>
+    <nav>
+     	<ul>
+     			
+     			<li><a href="/">HOME</a></li>
+                <li><a href="/ParcoAuto">PARCO AUTO</a></li>
+                <li><a href="/chat">NOLEGGIA</a></li>
+                 <li><a href="/my-account">IL MIO ACCOUNT</a></li>
+                 <li>
+		 <div th:if="${userDetails != null}">
+        <span th:text="${userDetails.username}"></span>
+        <a href="/logout">LOGOUT</a>
+    </div>
+    <div th:if="${userDetails == null}">
+        <a href="/login">LOGIN</a>
+    </div></li>
+     	</ul>
+   </nav>
+    <a href= "/my-cart" > <img src="Image/cart.png" width="30px" height="30px" /> </a>
+  </div>
+	<header>
+	</header>
+
+	
+	<h1>Login</h1>
+	<form th:action="@{/login}" method="POST">
+			<div>
+				<span>Username:</span>
+				<span><input name="username" type="text" required /></span>
+			</div>
+			<div>
+				<span>Password:</span>
+				<span><input name="password" type="password" required /></span>
+			</div>
+			<div>
+				<span th:if="${param.error != null}">Username o password errati</span>
+			</div>
+			<div>
+				<span><button type="submit">Login</button></span>
+			</div>
+	</form>
+	<div>
+		<a th:href="@{/register}" th:text="Registrati">Registrati</a>
+	</div>
+</body>
+
+</html>

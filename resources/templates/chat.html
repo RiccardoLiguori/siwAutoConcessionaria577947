@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ric&Nic Autoconcessionario || ChatBot Service Noleggio</title>
+     <link rel="stylesheet" href="/CSS/stileIndex.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        body { 
+            
+            background-color: #f4f4f9; 
+            margin: 0;
+            
+        }
+       #chatbox {
+    width: 1250px;
+    height: 500px;
+    border: 2px solid #007BFF;
+    background-color: white;
+    padding: 8px;
+    overflow-y: scroll;
+    position: relative;
+    margin: 0 auto;
+    padding-bottom: 50px; /* Spazio extra in fondo per il pulsante */
+}
+
+        .message { 
+            padding: 5px 10px; 
+            border-radius: 20px; 
+            margin: 5px; 
+            width: fit-content;
+        }
+        .bot { 
+            background-color: #007BFF;
+            color: white;
+            align-self: flex-start;
+        }
+        .user { 
+            background-color:orangered;
+            align-self: flex-end;
+            text-align: right;
+        }
+        #userInput, #datepicker { 
+            width: calc(100% - 16px);
+            padding: 10px; 
+            border: 2px solid #007BFF;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        #sendButton { 
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            padding: 20px;
+        }
+        #resetChat {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background-color: #f44336; /* Rosso per visibilità */
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 5px;
+    font-size: 0.8em;
+}
+
+        #datepicker { display: none; }
+    </style>
+</head>
+<body>
+		<br class="container">
+  <div class ="navbar">
+  	<div class="logo">
+      <img src="Image/logo.png" width="175px"/> 
+  	</div>
+    <nav>
+     	<ul>
+     			<li><a href="/">HOME</a></li>
+                <li><a href="/ParcoAuto">PARCO AUTO</a></li>
+                <li><a href="/chat">NOLEGGIA</a></li>
+                 <li><a href="/my-account">IL MIO ACCOUNT</a></li>
+                 <li>
+		 <div th:if="${userDetails != null}">
+        <span th:text="${userDetails.username}"></span>
+        <a href="/logout">LOGOUT</a>
+    </div>
+    <div th:if="${userDetails == null}">
+        <a href="/login">LOGIN</a>
+    </div></li>
+     	</ul>
+   </nav>
+    <a href= "/my-cart" > <img src="Image/cart.png" width="30px" height="30px" /> </a>
+  </div>
+    <h2 style="text-align:center; color: black;">Chat with Our Bot</h2>
+    <div id="chatbox">
+        <p class="message bot">Bot: Ciao! Come posso aiutarti oggi? Inserisci
+        <li><b>NOLEGGIO</b></li>
+        <li><b>INFORMAZIONI</b></li></p>
+    </div>
+    <input type="text" id="userInput" placeholder="Type your message here..." />
+    <button id="resetChat">Reset Chat</button>
+    <button id="sendButton">INVIA</button>
+    
+  
+    <input type="text" id="datepicker" placeholder="Select a date">
+ <span id="user-id" th:data-user-id="${userDetails.username}"></span>
+
+
+	<br></br>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   <script>
+$(document).ready(function() {
+  var userId = $('#user-id').attr('data-user-id');
+console.log("UserID: " + userId);  // Questo ti mostrerà il valore di userId nella console del browser.
+
+    var chatHistoryKey = 'chatHistory_' + userId; // Chiave unica per l'utente
+
+    // Carica la storia della chat precedente, se presente
+    if (localStorage.getItem(chatHistoryKey)) {
+        $('#chatbox').html(localStorage.getItem(chatHistoryKey));
+    }
+
+    // Impostazioni di inizializzazione del datepicker
+            flatpickr("#datepicker", {
+                enableTime: false,
+                dateFormat: "Y-m-d",
+                minDate: "today",
+                onChange: function(selectedDates, dateStr, instance) {
+                    console.log("Selected date: " + dateStr);
+                    handleUserMessage(dateStr);
+                    instance.close(); // Chiude il datepicker dopo la selezione
+                    $("#userInput").show().focus();
+                }
+    });
+
+    // Gestione dell'invio dei messaggi
+    $("#sendButton").click(function() {
+        var message = $("#userInput").val();
+        handleUserMessage(message);
+        $("#userInput").val('').focus();
+    });
+
+    // Gestione del reset della chat
+    $('#resetChat').click(function() {
+        localStorage.removeItem(chatHistoryKey);
+        $('#chatbox').html('<p class="message bot">Bot: Ciao! Come posso aiutarti oggi? Inserisci<li><b>NOLEGGIO</b></li><li><b>INFORMAZIONI</b></li></p>');
+    });
+
+    // Funzione per gestire la comunicazione con il server e aggiornare la chat
+    function handleUserMessage(message) {
+        $("#chatbox").append("<p class='message user'>You: " + message + "</p>");
+        saveConversation();
+        
+        $.post('/chat', { message: message }, function(response) {
+            $("#chatbox").append("<p class='message bot'>Bot: " + response + "</p>");
+            saveConversation();
+            if (response.includes("Da che data") || response.includes("reinserisci")) {
+                $("#datepicker").show(); // Mostra il datepicker
+                $("#userInput").hide();
+            } else {
+                $("#datepicker").hide(); // Nasconde il datepicker se non è richiesto
+                $("#userInput").show();
+            }
+        }).fail(function() {
+            $("#chatbox").append("<p>Bot: Sorry, there was an error processing your request.</p>");
+        });
+    }
+
+    // Funzione per salvare la conversazione nella memoria locale
+    function saveConversation() {
+        localStorage.setItem(chatHistoryKey, $('#chatbox').html());
+    }
+});
+</script>
+
+    <footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section about">
+            <h2>Chi siamo</h2>
+            <p>Siamo un autoconcessionario dedicato alla soddisfazione dei nostri clienti. Offriamo una vasta gamma di veicoli di alta qualità.</p><br></br>
+            <div class="contact">
+                <span><i class="fas fa-map-marker-alt"></i> Via della Magliana, 370 - Roma</span>
+                <span><i class="fas fa-phone"></i> 06 456789</span>
+                <span><i class="fas fa-envelope"></i> info@Ric&NicAutoconcessionario.com</span>
+            </div>
+        </div>
+        <div class="footer-section links">
+            <h2>Link utili</h2>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/ParcoAuto">Parco Auto</a></li>
+                <li><a href="/chat">Noleggia</a></li>
+                <li><a href="/my-account">Il mio account</a></li>
+            </ul>
+        </div>
+        <div class="footer-section social">
+            <h2>Seguici</h2>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        &copy; 2024 Autoconcessionario | Tutti i diritti riservati
+    </div>
+</footer>
+
+
+</bod>
+</html>
