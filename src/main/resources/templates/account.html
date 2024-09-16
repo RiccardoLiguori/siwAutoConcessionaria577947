@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Il mio account</title>
+    <link rel="stylesheet" href="/CSS/stileAccount.css">
+</head>
+
+<br>
+	<div class="container">
+  <div class ="navbar">
+  	<div class="logo">
+      <img src="Image/logo.png" width="175px"/> 
+  	</div>
+    <nav>
+     	<ul>
+     			<li><a href="/">HOME</a></li>
+                <li><a href="/ParcoAuto">PARCO AUTO</a></li>
+                <li><a href="/chat">NOLEGGIA</a></li>
+                 <li><a href="/my-account">IL MIO ACCOUNT</a></li>
+                 <li>
+		 <div th:if="${userDetails != null}">
+        <span th:text="${userDetails.username}"></span>
+        <a href="/logout">LOGOUT</a>
+    </div>
+    <div th:if="${userDetails == null}">
+        <a href="/login">LOGIN</a>
+    </div></li>
+     	</ul>
+   </nav>
+    <a href= "/my-cart" > <img src="Image/cart.png" width="30px" height="30px" /> </a>
+  </div>
+	</div>
+<div th:if="${purchases.isEmpty()}" class="no-purchases">
+    <p>Non hai ancora acquistato nessuna auto.</p>
+</div>
+<div th:if="${successMessage}" id="success-message">
+    					<p th:text="${successMessage}" class="message"></p>
+					</div>
+<div th:unless="${purchases.isEmpty()}" class="purchase-list">
+    <ul>
+        <li th:each="purchase : ${purchases}">
+            <div class="image-container">
+                <img th:src="${purchase.auto.urlimage}" alt="Immagine Auto" />
+            </div>
+            <div class="purchase-details">
+                <h3>Dettagli dell'Auto</h3>
+                <p>Marca: <span th:text="${purchase.auto.marca}"></span></p>
+                <p>Modello: <span th:text="${purchase.auto.modello}"></span></p>
+                <p class="purchase-price">Prezzo: <span th:text="${purchase.auto.prezzo}"></span> €</p>
+                <p class="purchase-date" th:text="'Acquisto effettuato il: ' + ${purchase.purchaseDate}"></p>
+            </div>
+        </li>
+    </ul>
+</div>
+
+
+
+
+</body>
+</html>
+
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    setTimeout(function() {
+        $("#error-message").fadeOut('slow');
+         $("#success-message").fadeOut('slow');
+    }, 3000); // 5000 milliseconds = 3 seconds
+});
+</script>
+</html>

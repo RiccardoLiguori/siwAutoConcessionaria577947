@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Ric&Nic | AutoSalone - Carrello </title>
+	<link rel="stylesheet" href="/CSS/stileCart.css" />
+</head>
+
+<body>
+	
+	<div class="container">
+  <div class ="navbar">
+  	<div class="logo">
+      <img src="Image/logo.png" width="175px"/> 
+  	</div>
+    <nav>
+     	<ul>
+     			<li><a href="/">HOME</a></li>
+                <li><a href="/ParcoAuto">PARCO AUTO</a></li>
+                <li><a href="/chat">NOLEGGIA</a></li>
+                 <li><a href="/my-account">IL MIO ACCOUNT</a></li>
+                 <li>
+		 <div th:if="${userDetails != null}">
+        <span th:text="${userDetails.username}"></span>
+        <a href="/logout">LOGOUT</a>
+    </div>
+    <div th:if="${userDetails == null}">
+        <a href="/login">LOGIN</a>
+    </div></li>
+     	</ul>
+   </nav>
+    <a href= "/my-cart" > <img src="Image/cart.png" width="30px" height="30px" /> </a>
+  </div>
+	</div>
+  
+    <header>
+        <h1>Il tuo carrello</h1>
+    </header>
+    <div th:if="${cartItems.isEmpty()}">
+        <p>Il tuo carrello è vuoto!</p>
+    </div>
+    <div th:unless="${cartItems.isEmpty()}">
+        <table>
+            <thead>
+                <tr>
+                    <th>Auto</th>
+                    <th>Prezzo</th>
+                    <th>Totale</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${cartItems}">
+                    <td th:text="${item.car.marca} + ' ' + ${item.car.modello}">Marca e Modello</td>
+                    <td th:text="${item.car.prezzo}">Prezzo</td>
+                    <td th:text="${item.car.prezzo}">Totale</td>
+                     <td> <form th:action="@{'/remove-from-cart/' + ${item.car.id}}" method="post">
+                     <button type="submit">Rimuovi dal Carrello</button>
+                    </form>
+                    </td>
+                </tr>
+                <div th:if="${errorMessage}" id="error-message">
+    					<p th:text="${errorMessage}"></p>
+					</div>
+					<div th:if="${successMessage}" id="success-message">
+    					<p th:text="${successMessage}"></p>
+					</div>
+            </tbody>
+        </table>
+        <form th:action="@{/checkout}" method="post">
+            <button type="submit">Procedi al Checkout</button>
+        </form>
+    </div>
+
+
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    setTimeout(function() {
+        $("#error-message").fadeOut('slow');
+         $("#success-message").fadeOut('slow');
+    }, 3000); // 5000 milliseconds = 3 seconds
+});
+</script>
+
+</html>
