@@ -1,0 +1,111 @@
+/* Reset di base per rimuovere margini e padding inutili */
+*{
+	margin:0;
+	padding:0;
+	box-sizing:border-box;
+	
+}
+body{
+	background: radial-gradient(circle,#f0f0f0,#ffffff); /* Modifica i colori di sfumatura come desideri */
+    background-size: 100% 100%; /* Imposta la dimensione dello sfondo */
+    background-position: center;
+}
+.navbar{
+	display:flex;
+	align-items: center;
+	padding:20px;
+}
+nav{
+	
+	flex:1;
+	text-align:right;
+}
+nav ul{
+	display:inline-block;
+	list-style-type:none;
+}
+nav ul li{
+	display: inline-block;
+	margin-right: 20px;
+}
+a{
+	text-decoration: none;
+	color:#555;
+}
+p{
+	color:#555;
+	
+}
+
+header {
+    background-color:orange; /* Blu scuro, comune in molti temi di autoconcessionaria */
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+}
+
+
+div > a > img {
+    display: block; /* Assicura che il logo sia centrato */
+    margin: 0 auto;
+    max-width: 200px; /* Imposta una larghezza massima per il logo */
+}
+
+h1 {
+    text-align: center;
+    margin: 20px 0;
+    color:black; /* Un blu più chiaro per titoli */
+}
+
+form {
+    background-color: white;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Sottile ombra per far risaltare il form */
+    border-radius: 8px; /* Bordi arrotondati per un aspetto moderno */
+}
+
+form div {
+    margin-bottom: 10px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: calc(100% - 22px); /* Larghezza piena con padding */
+    padding: 10px;
+    margin-bottom: 5px;
+    border: 1px solid #ccc; /* Bordo sottile per gli input */
+    border-radius: 4px;
+}
+
+input[type="password"] {
+    border: 1px solid #888; /* Differenzia leggermente la password */
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    border-color:black; /* Blu chiaro al focus */
+    outline: none;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: orange; /* Verde, per un pulsante invitante */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #004C00; /* Un verde più scuro per hover */
+}
