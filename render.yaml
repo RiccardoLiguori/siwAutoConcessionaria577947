@@ -1,0 +1,32 @@
+databases:
+  - name: autoconcessionaria-db
+    databaseName: autoconcessionaria
+    user: postgres
+    plan: free
+
+services:
+  - type: web
+    name: spring-boot-app
+    env: docker
+    plan: free
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: autoconcessionaria-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: autoconcessionaria-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: autoconcessionaria-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: autoconcessionaria-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: autoconcessionaria-db
+          property: password
