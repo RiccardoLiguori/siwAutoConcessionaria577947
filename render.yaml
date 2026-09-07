@@ -1,7 +1,7 @@
 databases:
   - name: autoconcessionaria-db
     databaseName: autoconcessionaria
-    user: postgres
+    user: db_user
     plan: free
 
 services:
